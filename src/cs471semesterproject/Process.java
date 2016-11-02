@@ -24,6 +24,9 @@ public class Process implements Comparable<Process> {
     public int getPid() {return this.pid;}
     public int getPriority() {return this.priority;}
     public String getStatus() {return this.status;}
+    public void setStatus(String s){
+        this.status = s;
+    } 
     
     public boolean equals (Process other){
         return this.getPriority() == other.getPriority();

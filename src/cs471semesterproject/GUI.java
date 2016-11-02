@@ -6,9 +6,11 @@
 package cs471semesterproject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.PriorityQueue;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -29,6 +31,7 @@ public class GUI extends javax.swing.JFrame {
      */
     public GUI() {
         initComponents();
+               
     }
 
     /**
@@ -43,7 +46,7 @@ public class GUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         rQTbl = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
-        blockedListTbl = new javax.swing.JTable();
+        bLTbl = new javax.swing.JTable();
         jScrollPane3 = new javax.swing.JScrollPane();
         cPTbl = new javax.swing.JTable();
         addNewbtn = new javax.swing.JButton();
@@ -52,8 +55,19 @@ public class GUI extends javax.swing.JFrame {
         readyQueueLbl = new javax.swing.JLabel();
         currentProcesslbl = new javax.swing.JLabel();
         contextSwitchBtn = new javax.swing.JButton();
+        blockRqBtn = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        killReadyProcessBtn = new javax.swing.JButton();
+        blockCurrentProcessBtn = new javax.swing.JButton();
+        killCurrentBtn = new javax.swing.JButton();
+        killBlockedBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+        setMaximizedBounds(new java.awt.Rectangle(0, 0, 976, 614));
+        setMaximumSize(new java.awt.Dimension(980, 620));
+        setMinimumSize(new java.awt.Dimension(976, 614));
+        setResizable(false);
 
         rQTbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -73,7 +87,7 @@ public class GUI extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(rQTbl);
 
-        blockedListTbl.setModel(new javax.swing.table.DefaultTableModel(
+        bLTbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -89,7 +103,7 @@ public class GUI extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane2.setViewportView(blockedListTbl);
+        jScrollPane2.setViewportView(bLTbl);
 
         cPTbl.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -123,10 +137,13 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
+        blockedListLbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         blockedListLbl.setText("Blocked List:");
 
+        readyQueueLbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         readyQueueLbl.setText("Ready Queue:");
 
+        currentProcesslbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         currentProcesslbl.setText("Current Process:");
 
         contextSwitchBtn.setText("Contect Switch");
@@ -135,6 +152,28 @@ public class GUI extends javax.swing.JFrame {
                 contextSwitchBtnActionPerformed(evt);
             }
         });
+
+        blockRqBtn.setText("Block");
+        blockRqBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                blockRqBtnActionPerformed(evt);
+            }
+        });
+
+        jButton1.setText("Unblock");
+
+        killReadyProcessBtn.setText("Kill");
+        killReadyProcessBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                killReadyProcessBtnActionPerformed(evt);
+            }
+        });
+
+        blockCurrentProcessBtn.setText("Block Current");
+
+        killCurrentBtn.setText("Kill Current");
+
+        killBlockedBtn.setText("Kill");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -146,28 +185,46 @@ public class GUI extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(readyQueueLbl))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(readyQueueLbl)
+                                .addGap(18, 18, 18)
+                                .addComponent(blockRqBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(killReadyProcessBtn)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(blockedListLbl)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(blockedListLbl)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(killBlockedBtn))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(addNewbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(killAllbtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(48, 48, 48)
+                        .addGap(18, 18, 18)
                         .addComponent(contextSwitchBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(currentProcesslbl)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(currentProcesslbl)
+                                .addGap(18, 18, 18)
+                                .addComponent(blockCurrentProcessBtn)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(killCurrentBtn))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(27, 27, 27))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(35, 35, 35)
-                .addComponent(currentProcesslbl)
+                .addGap(31, 31, 31)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(currentProcesslbl)
+                    .addComponent(blockCurrentProcessBtn)
+                    .addComponent(killCurrentBtn))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -175,17 +232,22 @@ public class GUI extends javax.swing.JFrame {
                             .addComponent(addNewbtn)
                             .addComponent(contextSwitchBtn))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(killAllbtn)
-                        .addGap(0, 43, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
+                        .addComponent(killAllbtn))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(blockedListLbl, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(readyQueueLbl, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(readyQueueLbl)
+                        .addComponent(blockRqBtn)
+                        .addComponent(killReadyProcessBtn))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(blockedListLbl)
+                        .addComponent(jButton1)
+                        .addComponent(killBlockedBtn)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(19, 19, 19))
         );
 
@@ -195,7 +257,6 @@ public class GUI extends javax.swing.JFrame {
     private void addNewbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNewbtnActionPerformed
         Process np = new Process(pid.list.get(0),priority.list.get(0),"Ready");
         pQueue.add(np);
-        System.out.println(pQueue.size());
         DefaultTableModel ready = (DefaultTableModel) rQTbl.getModel();
         ready.addRow(new Object[]{np.getPid(), np.getPriority(), np.getStatus()});
         pid.list.remove(0);
@@ -205,26 +266,110 @@ public class GUI extends javax.swing.JFrame {
 
     private void killAllbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_killAllbtnActionPerformed
         DefaultTableModel ready = (DefaultTableModel) rQTbl.getModel();
+        DefaultTableModel currentP = (DefaultTableModel) cPTbl.getModel();
+        DefaultTableModel blockP = (DefaultTableModel) bLTbl.getModel();
         ready.setRowCount(0);
+        currentP.setRowCount(0);
+        blockP.setRowCount(0);
         pQueue.clear();
+        current.clear();
+        blocked.clear();
     }//GEN-LAST:event_killAllbtnActionPerformed
 
     private void contextSwitchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_contextSwitchBtnActionPerformed
         
         DefaultTableModel currentP = (DefaultTableModel) cPTbl.getModel();
-       
+        DefaultTableModel ready = (DefaultTableModel) rQTbl.getModel();
+        
         if(currentP.getRowCount() == 0){
            
-            currentP.addRow(new Object[]{pQueue.poll().getPid(), pQueue.poll().getPriority(), pQueue.poll().getStatus()});
+            Process p2 = pQueue.poll();
+            p2.setStatus("Current Process");
+            currentP.addRow(new Object[]{p2.getPid(), p2.getPriority(),
+                p2.getStatus()}); 
+            current.add(p2);
+             for (int i = 0; i < ready.getRowCount(); i++) {
+                if ((ready.getValueAt(i, 0)).equals(p2.getPid())) {
+                    ready.removeRow(i);
+                    break;
+                }
+            }
+        }
+        else if(currentP.getRowCount() == 1){
+            Process nextC = pQueue.peek();
+            Process c = current.get(0);
             
-            //current.add(pQueue.poll());
-            //pQueue.remove();
+            if(nextC.getPriority() < c.getPriority()){
+                c.setStatus("Ready");
+                nextC = pQueue.poll();
+                nextC.setStatus("Current Process");
             
+                //delete current process from table
+                currentP.setRowCount(0);
+                //add current process back to ready queue
+                pQueue.add(c);
+                //delete current process from current list
+                current.clear();
+                //add current process back into readytbl
+                ready.addRow(new Object[]{c.getPid(), c.getPriority(),
+                    c.getStatus()});
+            
+                currentP.addRow(new Object[]{nextC.getPid(), nextC.getPriority(),
+                    nextC.getStatus()}); 
+                current.add(nextC);
+            
+                for (int i = 0; i < ready.getRowCount(); i++) {
+                    if ((ready.getValueAt(i, 0)).equals(nextC.getPid())) {
+                        ready.removeRow(i);
+                        break;
+                    }
+                }
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "Process with highest "
+                        + "priority is currently running");
+            }
         }
         else {
             JOptionPane.showMessageDialog(null, "CPU in use!");
         }
     }//GEN-LAST:event_contextSwitchBtnActionPerformed
+
+    private void blockRqBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blockRqBtnActionPerformed
+        DefaultTableModel ready = (DefaultTableModel) rQTbl.getModel();
+        DefaultTableModel blockP = (DefaultTableModel) bLTbl.getModel();
+        
+        int row = rQTbl.getSelectedRow();
+        int pid = Integer.parseInt(rQTbl.getValueAt(row, 0).toString());
+       
+        for (Process p : pQueue) {
+            if(p.getPid() == pid){
+                p.setStatus("Blocked");
+                blocked.add(p);
+                blockP.addRow(new Object[]{p.getPid(), p.getPriority(),
+                    p.getStatus()});
+                pQueue.remove(p);
+                //remove from ready Queue table
+                ready.removeRow(rQTbl.getSelectedRow());
+                break;
+            }
+        }    
+    }//GEN-LAST:event_blockRqBtnActionPerformed
+
+    private void killReadyProcessBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_killReadyProcessBtnActionPerformed
+        DefaultTableModel ready = (DefaultTableModel) rQTbl.getModel();
+        int row = rQTbl.getSelectedRow();
+        int pid = Integer.parseInt(rQTbl.getValueAt(row, 0).toString());
+        
+        for (Process p : pQueue) {
+            if(p.getPid() == pid){
+                pQueue.remove(p);
+                //remove from ready Queue table
+                ready.removeRow(rQTbl.getSelectedRow());
+                break;
+            }
+        }  
+    }//GEN-LAST:event_killReadyProcessBtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -263,15 +408,21 @@ public class GUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addNewbtn;
+    private javax.swing.JTable bLTbl;
+    private javax.swing.JButton blockCurrentProcessBtn;
+    private javax.swing.JButton blockRqBtn;
     private javax.swing.JLabel blockedListLbl;
-    private javax.swing.JTable blockedListTbl;
     private javax.swing.JTable cPTbl;
     private javax.swing.JButton contextSwitchBtn;
     private javax.swing.JLabel currentProcesslbl;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JButton killAllbtn;
+    private javax.swing.JButton killBlockedBtn;
+    private javax.swing.JButton killCurrentBtn;
+    private javax.swing.JButton killReadyProcessBtn;
     private javax.swing.JTable rQTbl;
     private javax.swing.JLabel readyQueueLbl;
     // End of variables declaration//GEN-END:variables

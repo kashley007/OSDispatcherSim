@@ -170,6 +170,11 @@ public class GUI extends javax.swing.JFrame {
         });
 
         blockCurrentProcessBtn.setText("Block Current");
+        blockCurrentProcessBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                blockCurrentProcessBtnActionPerformed(evt);
+            }
+        });
 
         killCurrentBtn.setText("Kill Current");
 
@@ -340,36 +345,68 @@ public class GUI extends javax.swing.JFrame {
         DefaultTableModel blockP = (DefaultTableModel) bLTbl.getModel();
         
         int row = rQTbl.getSelectedRow();
-        int pid = Integer.parseInt(rQTbl.getValueAt(row, 0).toString());
+        if(row > -1){
+            int pid = Integer.parseInt(rQTbl.getValueAt(row, 0).toString());
        
-        for (Process p : pQueue) {
-            if(p.getPid() == pid){
-                p.setStatus("Blocked");
-                blocked.add(p);
-                blockP.addRow(new Object[]{p.getPid(), p.getPriority(),
+            for (Process p : pQueue) {
+                if(p.getPid() == pid){
+                    p.setStatus("Blocked");
+                    blocked.add(p);
+                    blockP.addRow(new Object[]{p.getPid(), p.getPriority(),
                     p.getStatus()});
-                pQueue.remove(p);
-                //remove from ready Queue table
-                ready.removeRow(rQTbl.getSelectedRow());
-                break;
-            }
-        }    
+                    pQueue.remove(p);
+                    //remove from ready Queue table
+                    ready.removeRow(rQTbl.getSelectedRow());
+                    break;
+                }
+            }   
+        }else {
+            JOptionPane.showMessageDialog(null, "Please select a process from the Ready Queue");
+        }
     }//GEN-LAST:event_blockRqBtnActionPerformed
 
     private void killReadyProcessBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_killReadyProcessBtnActionPerformed
         DefaultTableModel ready = (DefaultTableModel) rQTbl.getModel();
         int row = rQTbl.getSelectedRow();
-        int pid = Integer.parseInt(rQTbl.getValueAt(row, 0).toString());
+        if(row > -1){
+            int pid = Integer.parseInt(rQTbl.getValueAt(row, 0).toString());
         
-        for (Process p : pQueue) {
-            if(p.getPid() == pid){
-                pQueue.remove(p);
-                //remove from ready Queue table
-                ready.removeRow(rQTbl.getSelectedRow());
-                break;
+            for (Process p : pQueue) {
+                if(p.getPid() == pid){
+                    pQueue.remove(p);
+                    //remove from ready Queue table
+                    ready.removeRow(rQTbl.getSelectedRow());
+                    break;
+                }
             }
-        }  
+        }else{
+            JOptionPane.showMessageDialog(null, "Please select a process from the Ready Queue");
+        }
     }//GEN-LAST:event_killReadyProcessBtnActionPerformed
+
+    private void blockCurrentProcessBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_blockCurrentProcessBtnActionPerformed
+        DefaultTableModel currentP = (DefaultTableModel) cPTbl.getModel();
+        DefaultTableModel blockP = (DefaultTableModel) bLTbl.getModel();
+        
+        int row = cPTbl.getSelectedRow();
+        if(row > -1){
+            int pid = Integer.parseInt(cPTbl.getValueAt(row, 0).toString());
+            Process p = current.get(0);
+            
+            if(p.getPid() == pid){
+                p.setStatus("Blocked");
+                blocked.add(p);
+                blockP.addRow(new Object[]{p.getPid(), p.getPriority(),
+                p.getStatus()});
+                current.remove(p);
+                //remove from ready Queue table
+                currentP.removeRow(cPTbl.getSelectedRow());  
+            }
+            
+        }else {
+            JOptionPane.showMessageDialog(null, "Please select the current process");
+        }
+    }//GEN-LAST:event_blockCurrentProcessBtnActionPerformed
 
     /**
      * @param args the command line arguments

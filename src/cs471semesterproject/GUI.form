@@ -55,7 +55,7 @@
                           <Group type="102" attributes="0">
                               <Component id="blockedListLbl" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                              <Component id="unblockbtn" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="killBlockedBtn" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -116,7 +116,7 @@
                   </Group>
                   <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                       <Component id="blockedListLbl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="unblockbtn" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="killBlockedBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -247,10 +247,13 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="blockRqBtnActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton1">
+    <Component class="javax.swing.JButton" name="unblockbtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Unblock"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="unblockbtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="killReadyProcessBtn">
       <Properties>
@@ -272,11 +275,17 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Kill Current"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="killCurrentBtnActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="killBlockedBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Kill"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="killBlockedBtnActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

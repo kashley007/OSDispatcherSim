@@ -56,7 +56,7 @@ public class GUI extends javax.swing.JFrame {
         currentProcesslbl = new javax.swing.JLabel();
         contextSwitchBtn = new javax.swing.JButton();
         blockRqBtn = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        unblockbtn = new javax.swing.JButton();
         killReadyProcessBtn = new javax.swing.JButton();
         blockCurrentProcessBtn = new javax.swing.JButton();
         killCurrentBtn = new javax.swing.JButton();
@@ -160,7 +160,12 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Unblock");
+        unblockbtn.setText("Unblock");
+        unblockbtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                unblockbtnActionPerformed(evt);
+            }
+        });
 
         killReadyProcessBtn.setText("Kill");
         killReadyProcessBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -177,8 +182,18 @@ public class GUI extends javax.swing.JFrame {
         });
 
         killCurrentBtn.setText("Kill Current");
+        killCurrentBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                killCurrentBtnActionPerformed(evt);
+            }
+        });
 
         killBlockedBtn.setText("Kill");
+        killBlockedBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                killBlockedBtnActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -201,7 +216,7 @@ public class GUI extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(blockedListLbl)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1)
+                                .addComponent(unblockbtn)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(killBlockedBtn))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -247,7 +262,7 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(killReadyProcessBtn))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(blockedListLbl)
-                        .addComponent(jButton1)
+                        .addComponent(unblockbtn)
                         .addComponent(killBlockedBtn)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -360,7 +375,10 @@ public class GUI extends javax.swing.JFrame {
                     break;
                 }
             }   
-        }else {
+        }else if(ready.getRowCount() == 0){
+            JOptionPane.showMessageDialog(null, "There are no processes in the Ready Queue");
+        }
+        else{
             JOptionPane.showMessageDialog(null, "Please select a process from the Ready Queue");
         }
     }//GEN-LAST:event_blockRqBtnActionPerformed
@@ -379,7 +397,10 @@ public class GUI extends javax.swing.JFrame {
                     break;
                 }
             }
-        }else{
+        }else if(ready.getRowCount() == 0){
+            JOptionPane.showMessageDialog(null, "There are no processes in the Ready Queue");
+        }
+        else{
             JOptionPane.showMessageDialog(null, "Please select a process from the Ready Queue");
         }
     }//GEN-LAST:event_killReadyProcessBtnActionPerformed
@@ -399,14 +420,85 @@ public class GUI extends javax.swing.JFrame {
                 blockP.addRow(new Object[]{p.getPid(), p.getPriority(),
                 p.getStatus()});
                 current.remove(p);
-                //remove from ready Queue table
+                //remove from current table
                 currentP.removeRow(cPTbl.getSelectedRow());  
             }
             
-        }else {
+        }else if(currentP.getRowCount() == 0){
+            JOptionPane.showMessageDialog(null, "No process currently running");
+        }
+        else{
             JOptionPane.showMessageDialog(null, "Please select the current process");
         }
     }//GEN-LAST:event_blockCurrentProcessBtnActionPerformed
+
+    private void killCurrentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_killCurrentBtnActionPerformed
+        DefaultTableModel currentP = (DefaultTableModel) cPTbl.getModel();
+        int row = cPTbl.getSelectedRow();
+        if(row > -1){
+            int pid = Integer.parseInt(cPTbl.getValueAt(row, 0).toString());
+            Process p = current.get(0);
+
+            if(p.getPid() == pid){
+                currentP.removeRow(cPTbl.getSelectedRow());
+                current.remove(p);
+            }
+            
+        }else if(currentP.getRowCount() == 0){
+            JOptionPane.showMessageDialog(null, "No process currently running");
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Please select the current process");
+        }
+    }//GEN-LAST:event_killCurrentBtnActionPerformed
+
+    private void killBlockedBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_killBlockedBtnActionPerformed
+        DefaultTableModel blockP = (DefaultTableModel) bLTbl.getModel();
+        int row = bLTbl.getSelectedRow();
+        if(row > -1){
+            int pid = Integer.parseInt(bLTbl.getValueAt(row, 0).toString());
+        
+            for (Process p : blocked) {
+                if(p.getPid() == pid){
+                    blocked.remove(p);
+                    //remove from ready Queue table
+                    blockP.removeRow(bLTbl.getSelectedRow());
+                    break;
+                }
+            }
+        }else if(blockP.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "There are no processes in the Blocked List");
+        }else {
+            JOptionPane.showMessageDialog(null, "Please select a process from the Blocked List");
+        }
+    }//GEN-LAST:event_killBlockedBtnActionPerformed
+
+    private void unblockbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_unblockbtnActionPerformed
+        DefaultTableModel ready = (DefaultTableModel) rQTbl.getModel();
+        DefaultTableModel blockP = (DefaultTableModel) bLTbl.getModel();
+        
+        int row = bLTbl.getSelectedRow();
+        if(row > -1){
+            int pid = Integer.parseInt(bLTbl.getValueAt(row, 0).toString());
+       
+            for (Process p : blocked) {
+                if(p.getPid() == pid){
+                    p.setStatus("Ready");
+                    pQueue.add(p);
+                    ready.addRow(new Object[]{p.getPid(), p.getPriority(),
+                    p.getStatus()});
+                    blocked.remove(p);
+                    //remove from block list table
+                    blockP.removeRow(bLTbl.getSelectedRow());
+                    break;
+                }
+            }   
+        }else if(blockP.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(null, "There are no processes in the Blocked List");
+        }else {
+            JOptionPane.showMessageDialog(null, "Please select a process from the Blocked List");
+        }
+    }//GEN-LAST:event_unblockbtnActionPerformed
 
     /**
      * @param args the command line arguments
@@ -452,7 +544,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JTable cPTbl;
     private javax.swing.JButton contextSwitchBtn;
     private javax.swing.JLabel currentProcesslbl;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -462,5 +553,6 @@ public class GUI extends javax.swing.JFrame {
     private javax.swing.JButton killReadyProcessBtn;
     private javax.swing.JTable rQTbl;
     private javax.swing.JLabel readyQueueLbl;
+    private javax.swing.JButton unblockbtn;
     // End of variables declaration//GEN-END:variables
 }

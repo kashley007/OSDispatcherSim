@@ -63,6 +63,7 @@ public class GUI extends javax.swing.JFrame {
         killBlockedBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Kevin Ashley- CS471 Semester Project");
         setBackground(new java.awt.Color(255, 255, 255));
         setMaximizedBounds(new java.awt.Rectangle(0, 0, 976, 614));
         setMaximumSize(new java.awt.Dimension(980, 620));
